@@ -3,14 +3,14 @@ field_game = [['*', '1', '2', '3'],
          ['2', ' ', ' ', ' '],
          ['3', ' ', ' ', ' ']]
 
-def field():
+def field(): #Создаю функцию для вывода игрового поля
     print('--------------------')
     for i in range(0, 4):
         print(field_game[i])
     print('--------------------')
 
-def winner():
-    win = False
+def winner(): #функция для проверки условия победы и определения победителя
+    win = False #пока переменная False игра продолжается, при обнаружении условия победы в нее же сохраняется информация о победителе
     for i in range(1, 4):
         if ((field_game[i][1] == field_game[i][2]) and
                 (field_game[i][3] == field_game[i][1]) and (field_game[i][1] != ' ')):
@@ -32,10 +32,10 @@ def winner():
             win = False
     return win
 
-def draw():
+def draw(): #функция обнаружения ничьей
     print('THE GAME IS OVER, friendship has won! \n THANKS FOR THE GAME!')
 
-def deter():
+def deter(): #детерминатор для определения порядка хода, он же проверяет условия победы и ничьей
     counter = 0
     for i in range(1, 4):
         counter += field_game[i].count(' ')
@@ -47,9 +47,9 @@ def deter():
         dtm = counter % 2
     return dtm
 
-def play_a():
+def play_a(): #ход игрока А
     field()
-    try:
+    try: #здесь же проверяется корректность ввода координат
         a, b = map(int, input(f"Player {player_a} is your turn:").split())
         (0 > a > 4) or (0 > b > 4)
     except:
@@ -62,7 +62,7 @@ def play_a():
             print('the coordinates have already been used')
     playd()
 
-def play_b():
+def play_b(): #аналогично для игрока Б, с возможностью прикрутить потом ИИ(хочу немношк побаловаться)
     field()
     if player_b == 'AI':
         pass
@@ -80,7 +80,7 @@ def play_b():
                 print('Coordinates is used')
     playd()
 
-def playd():
+def playd(): #непосредственно функция игрового процесса
     dtm = deter()
     if dtm == 1:
         play_a()
