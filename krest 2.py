@@ -1,88 +1,106 @@
-def greet():
-    print("-------------------")
-    print("  крестики-нолики  ")
-    print("-------------------")
-    print(" формат ввода: x y ")
-    print(" x - номер строки  ")
-    print(" y - номер столбца ")
+field_game = [['*', '1', '2', '3'],
+         ['1', ' ', ' ', ' '],
+         ['2', ' ', ' ', ' '],
+         ['3', ' ', ' ', ' ']]
 
+def field():
+    print('--------------------')
+    for i in range(0, 4):
+        print(field_game[i])
+    print('--------------------')
 
-def show():
-    print()
-    print("    | 0 | 1 | 2 | ")
-    print("  --------------- ")
-    for i, row in enumerate(field):
-        row_str = f"  {i} | {' | '.join(row)} | "
-        print(row_str)
-        print("  --------------- ")
-    print()
+def winner():
+    win = False
+    for i in range(1, 4):
+        if ((field_game[i][1] == field_game[i][2]) and
+                (field_game[i][3] == field_game[i][1]) and (field_game[i][1] != ' ')):
+            win = field_game[i][1]
+            break
+        elif ((field_game[1][i] == field_game[2][i]) and
+              (field_game[3][i] == field_game[1][i]) and (field_game[1][i] != ' ')):
+            win = field_game[1][i]
+            break
+        elif ((field_game[1][1] == field_game[2][2]) and
+              (field_game[2][2] == field_game[3][3]) and (field_game[1][1] != ' ')):
+            win = field_game[1][1]
+            break
+        elif ((field_game[1][3] == field_game[2][2]) and
+              (field_game[2][2] == field_game[3][1]) and (field_game[1][3] != ' ')):
+            win = field_game[1][3]
+            break
+        else:
+            win = False
+    return win
 
+def draw():
+    print('THE GAME IS OVER, friendship has won! \n THANKS FOR THE GAME!')
 
-def ask():
-    while True:
-        cords = input("         Ваш ход: ").split()
-
-        if len(cords) != 2:
-            print(" Введите 2 координаты! ")
-            continue
-
-        x, y = cords
-
-        if not (x.isdigit()) or not (y.isdigit()):
-            print(" Введите числа! ")
-            continue
-
-        x, y = int(x), int(y)
-
-        if 0 > x or x > 2 or 0 > y or y > 2:
-            print(" Координаты вне диапазона! ")
-            continue
-
-        if field[x][y] != " ":
-            print(" Клетка занята! ")
-            continue
-
-        return x, y
-
-
-def check_win():
-    win_cord = (((0, 0), (0, 1), (0, 2)), ((1, 0), (1, 1), (1, 2)), ((2, 0), (2, 1), (2, 2)),
-                ((0, 2), (1, 1), (2, 0)), ((0, 0), (1, 1), (2, 2)), ((0, 0), (1, 0), (2, 0)),
-                ((0, 1), (1, 1), (2, 1)), ((0, 2), (1, 2), (2, 2)))
-    for cord in win_cord:
-        symbols = []
-        for c in cord:
-            symbols.append(field[c[0]][c[1]])
-        if symbols == ["X", "X", "X"]:
-            print("Выиграл X!!!")
-            return True
-        if symbols == ["0", "0", "0"]:
-            print("Выиграл 0!!!")
-            return True
-    return False
-
-
-greet()
-field = [[" "] * 3 for i in range(3)]
-count = 0
-while True:
-    count += 1
-    show()
-    if count % 2 == 1:
-        print(" Ходит крестик!")
+def deter():
+    counter = 0
+    for i in range(1, 4):
+        counter += field_game[i].count(' ')
+    if counter == 0 and winner() is False:
+        dtm = 2
+    elif winner():
+        dtm = winner()
     else:
-        print(" Ходит нолик!")
+        dtm = counter % 2
+    return dtm
 
-    x, y = ask()
-
-    if count % 2 == 1:
-        field[x][y] = "X"
+def play_a():
+    field()
+    try:
+        a, b = map(int, input(f"Player {player_a} is your turn:").split())
+        (0 > a > 4) or (0 > b > 4)
+    except:
+        print('incorrect coordinates')
+        play_a()
     else:
-        field[x][y] = "0"
+        if field_game[b][a] == ' ':
+            field_game[b][a] = 'X'
+        else:
+            print('the coordinates have already been used')
+    playd()
 
-    if check_win():
-        break
+def play_b():
+    field()
+    if player_b == 'AI':
+        pass
+    else:
+        try:
+            a, b = map(int, input(f"Player {player_b} is your turn:").split())
+            (0 > a > 4) or (0 > b > 4)
+        except:
+            print('incorrect coordinates')
+            play_b()
+        else:
+            if field_game[b][a] == ' ':
+                field_game[b][a] = 'O'
+            else:
+                print('Coordinates is used')
+    playd()
 
-    if count == 9:
-        print(" Ничья!")
-        break
+def playd():
+    dtm = deter()
+    if dtm == 1:
+        play_a()
+    elif dtm == 0:
+        play_b()
+    elif dtm == 2:
+        field()
+        draw()
+    else:
+        if dtm == 'X':
+            field()
+            print(f"Player {player_a} won the game! \nCONGRATULATIONS!!!")
+        elif dtm == 'O':
+            field()
+            print(f"Player {player_b} won the game! \nCONGRATULATIONS!!!")
+
+
+print('WELKOME TO THE KRESTIKI-NOLIKI')
+player_a = input('Player 1 input youre first name')
+player_b = input('player 2 input youre first name')
+print('\Enter the coordinates in the format:X(horizontally) Y(vertically),\nseparated by a space.')
+
+playd()
